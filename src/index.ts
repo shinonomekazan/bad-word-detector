@@ -78,22 +78,15 @@ export class BadWordDetector {
 		return false;
 	}
 
-	private containsMatch(word: string): boolean {
-		if (this.containsExactMatch(word)) return true;
-
-		if (this.containsPartialMatch(word)) return true;
-
-		return false;
-	}
-
 	isBad(input: string): boolean {
 		if (!input.length) throw new Error("Input is empty");
 
 		const normalizedWord = this.normalizeWord(input);
 
-		const containsMatch = this.containsMatch(normalizedWord);
+		if (this.containsExactMatch(normalizedWord)) return true;
 
-		console.log(input, containsMatch);
-		return containsMatch;
+		if (this.containsPartialMatch(normalizedWord)) return true;
+		
+		return false;
 	}
 }
