@@ -36,23 +36,27 @@ const testBlacklistedInput = [
 
 // BadWordDetector should allow these
 const testOkInput = [
-	"elephant",
 	"blueberry",
 	"berry",
 	"passion",
 	"fruit",
-	"シマウマ",
-	"黒猫",
-	"アイス",
-	"カワウソ",
+	"すいこ",
+	"ずいか",
+	"メロ",
 	"メロディー",
 	"ひざ",
 	"ひさ",
 	"ピサ",
+	"あざいー",
 	"シューす",
 	"シューズ",
 	"スイーツ",
 	"きう",
+	"シマウマ",
+	"黒猫",
+	"アイス",
+	"カワウソ",
+	"elephant",
 ];
 
 describe("BadWordDetector", () => {
