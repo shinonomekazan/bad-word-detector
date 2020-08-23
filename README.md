@@ -6,6 +6,7 @@ Normalizes input string in the following ways:
 - Removes accents from latin characters (`ë`→`e`)
 - Fixes full-width latin characters to half-width (`ｆｒｕｉｔ`→`fruit`)
 - Fixes half-width katakana to full-width (`ｼﾞｭｰｽ`→`ジュース`)
+- Converts all hiragana to katakana (`じゅーす`→`ジュース`)
 - Removes spaces & special characters
 
 ## Usage
