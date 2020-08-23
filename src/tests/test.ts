@@ -1,19 +1,19 @@
 import { BadWordDetector } from "../";
 
 // BadWordDetector converts hiragana to katakana when checking, so base list should not contain hiragana
-const blacklistedWordList = [
-	"strawberry",
-	"スイカ",
-	"西瓜",
-	"メロン",
-	"passionfruit",
-	"桃",
-	"苺",
-	"キウィ",
-	"ジュース",
-	"アサイー",
-	"ピザ",
-];
+const wordList = {
+	strawberry: [],
+	スイカ: [],
+	西瓜: [],
+	メロン: [],
+	passionfruit: [],
+	桃: [],
+	苺: [],
+	キウィ: [],
+	ジュース: [],
+	アサイー: [],
+	ピザ: [],
+};
 
 // BadWordDetector should detect all these
 const testBlacklistedInput = [
@@ -65,7 +65,7 @@ const testOkInput = [
 ];
 
 describe("BadWordDetector", () => {
-	const detector = new BadWordDetector(blacklistedWordList);
+	const detector = new BadWordDetector(wordList);
 
 	it("Returns true when string contains a blacklisted word", () => {
 		for (const badWord of testBlacklistedInput) {

@@ -1,8 +1,14 @@
 import { deburr } from "lodash";
-export class BadWordDetector {
-	private wordList: string[];
 
-	constructor(wordList: string[]) {
+// key is the word itself, value is an array of words containing key which should be allowed (whitelist)
+interface WordList {
+	[wordToDetect: string]: string[];
+}
+
+export class BadWordDetector {
+	private wordList: WordList;
+
+	constructor(wordList: WordList) {
 		this.wordList = wordList;
 	}
 
@@ -33,7 +39,7 @@ export class BadWordDetector {
 	}
 
 	private containsExactMatch(word: string): boolean {
-		return this.wordList.includes(word);
+		return this.wordList.hasOwnProperty(word);
 	}
 
 	private containsPartialMatch(word: string): boolean {
@@ -49,7 +55,8 @@ export class BadWordDetector {
 
 				const toCheck = word.substring(i, maxIndex + 1);
 
-				if (this.wordList.includes(toCheck)) {
+				if (this.wordList.hasOwnProperty(toCheck)) {
+					// todo: whitelist
 					return true;
 				}
 				maxIndex++;
