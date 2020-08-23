@@ -1,3 +1,4 @@
+import { deburr } from "lodash";
 export class BadWordDetector {
 	private wordList: string[];
 
@@ -13,14 +14,6 @@ export class BadWordDetector {
 		return word.replace(/([^\p{L}-]+)/ug, () => "");
 	}
 
-	private containsJapanese(word: string): boolean {
-		const japaneseCharRegex = /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g;
-
-		if (!japaneseCharRegex.test(word)) return false;
-
-		return true;
-	}
-
 	private hiraganaToKatakana(word: string): string {
 		return word.replace(/[\u3041-\u3096]/g, (letter) => String.fromCharCode(letter.charCodeAt(0) + 0x60));
 	}
@@ -28,24 +21,12 @@ export class BadWordDetector {
 	private normalizeWord(word: string): string {
 		const spacesRemoved = this.removeSpaces(word);
 
-		const containsJapaneseOrFullWidthEnglish = this.containsJapanese(spacesRemoved);
+		const hiraganaToKatakana = this.hiraganaToKatakana(spacesRemoved);
+		// 全角英語を半角にする、半角カタカナを全角にする
+		const widthNormalized = hiraganaToKatakana.normalize("NFKC");
+		const accentsRemoved = deburr(widthNormalized);
 
-		let normalized = spacesRemoved;
-		if (containsJapaneseOrFullWidthEnglish) {
-			const hiraganaToKatakana = this.hiraganaToKatakana(normalized);
-			// 全角英語を半角にする、半角カタカナを全角にする
-			normalized = hiraganaToKatakana.normalize("NFKC");
-		}
-
-		// 全角英語も「containsJapanese」になってしまうので、７１行目でノーマライズされたあとももう一回チェックする
-		const containsJapanese = this.containsJapanese(normalized);
-		if (!containsJapanese) {
-			// "â"を"a"にするとか
-			// NKFDは日本語が入っていると「ド」が「ト」になったりするので使えない
-			normalized = normalized.normalize("NFKD");
-		}
-
-		const specialCharsRemoved = this.removeNonLetters(normalized);
+		const specialCharsRemoved = this.removeNonLetters(accentsRemoved);
 		if (!specialCharsRemoved.length) throw new Error("Input contains no valid characters");
 
 		return specialCharsRemoved.toLowerCase();
