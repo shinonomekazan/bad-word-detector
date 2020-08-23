@@ -18,6 +18,7 @@ const blacklistedWordList = [
 // BadWordDetector should detect all these
 const testBlacklistedInput = [
 	"STRáWBERRY",
+	"日本語も紛れ込んでるSTｒáWBERｒYアアア",
 	"wordwordwordSTRáWBERRY",
 	"   　STRAW🍓 BERRY",
 	"すいか",
