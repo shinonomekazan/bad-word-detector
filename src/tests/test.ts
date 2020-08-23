@@ -19,7 +19,7 @@ const blacklistedWordList = [
 const testBlacklistedInput = [
 	"STRáWBERRY",
 	"日本語も紛れ込んでるSTｒáWBERｒYアアア",
-	"wordwordwordSTRáWBERRY",
+	"wordwordwordSTRáWBëRRY",
 	"   　STRAW🍓 BERRY",
 	"すいか",
 	"すい＊＊＊か",
