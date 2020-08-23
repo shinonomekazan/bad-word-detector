@@ -15,7 +15,7 @@ export class BadWordDetector {
 
 	private containsJapanese(word: string): boolean {
 		const japaneseCharRegex = /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g;
-		
+
 		if (!japaneseCharRegex.test(word)) return false;
 
 		return true;
@@ -56,7 +56,7 @@ export class BadWordDetector {
 	}
 
 	private containsPartialMatch(word: string): boolean {
-		for (let i = 0; i < word.length - 2; i++) {
+		for (let i = 0; i < word.length; i++) {
 			let maxIndex = i;
 
 			while (maxIndex < word.length) {
@@ -86,7 +86,7 @@ export class BadWordDetector {
 		if (this.containsExactMatch(normalizedWord)) return true;
 
 		if (this.containsPartialMatch(normalizedWord)) return true;
-		
+
 		return false;
 	}
 }
