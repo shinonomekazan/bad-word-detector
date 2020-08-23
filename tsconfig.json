@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"newLine": "lf",
+		"outDir": "build",
+		"target": "es2018",
+		"lib": ["es2018"],
+		"declaration": true,
+		"sourceMap": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"strictNullChecks": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"esModuleInterop": true
+	},
+	"include": [
+		"src/**/*.ts"
+	]
+}
