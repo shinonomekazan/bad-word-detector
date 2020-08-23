@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Detect if input string contains blacklisted words",
   "main": "build/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shinonomekazan/bad-word-detector"
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest"
