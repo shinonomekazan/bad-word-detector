@@ -18,6 +18,7 @@ const blacklistedWordList = [
 // BadWordDetector should detect all these
 const testBlacklistedInput = [
 	"STRáWBERRY",
+	"wordwordwordSTRáWBERRY",
 	"   　STRAW🍓 BERRY",
 	"すいか",
 	"すい＊＊＊か",
@@ -31,7 +32,9 @@ const testBlacklistedInput = [
 	"じゅーす",
 	"じ🍊ゅ＆＆ーす",
 	"あさいー",
+	"あささあさいーAbCd",
 	"ぴざ",
+	"ぴざAぽ",
 ];
 
 // BadWordDetector should allow these
