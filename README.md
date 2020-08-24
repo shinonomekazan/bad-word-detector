@@ -12,11 +12,11 @@ Normalizes input string in the following ways:
 ## Usage
 
 ```
-const badWordList = [
-	"苺",
-	"ジュース",
-	"watermelon",
-];
+const badWordList = {
+	苺: [],
+	ジュース: [],
+	watermelon: [],
+};
 
 const badWordDetector = new BadWordDetector(badWordList);
 
