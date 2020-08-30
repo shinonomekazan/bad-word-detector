@@ -85,7 +85,9 @@ export class BadWordDetector {
 
 						if (occurringIndex < 0) continue;
 
-						if (this.containsMatchAfterRemovingWhitelistedWord(word, okWord, occurringIndex)) return true;
+						if (!this.containsMatchAfterRemovingWhitelistedWord(word, okWord, occurringIndex)) break;
+
+						return true;
 					}
 				}
 				maxIndex++;
