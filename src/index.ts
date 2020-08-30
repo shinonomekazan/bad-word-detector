@@ -42,6 +42,27 @@ export class BadWordDetector {
 		return this.wordList.hasOwnProperty(word);
 	}
 
+	private containsMatch(word: string): boolean {
+		return this.containsExactMatch(word) || this.containsPartialMatch(word);
+	}
+
+	private containsMatchAfterRemovingWhitelistedWord(word: string, whitelistedWord: string, indexOccurredAt: number): boolean {
+		const wordBefore = word.substring(0, indexOccurredAt);
+		const wordAfter = word.substr(indexOccurredAt + whitelistedWord.length);
+
+		if (wordBefore.length) {
+			const containsBadWord = this.containsMatch(wordBefore);
+			if (containsBadWord) return true;
+		}
+
+		if (wordAfter.length) {
+			const containsBadWord = this.containsMatch(wordAfter);
+			if (containsBadWord) return true;
+		}
+
+		return false;
+	}
+
 	private containsPartialMatch(word: string): boolean {
 		for (let i = 0; i < word.length; i++) {
 			let maxIndex = i;
@@ -56,8 +77,16 @@ export class BadWordDetector {
 				const toCheck = word.substring(i, maxIndex + 1);
 
 				if (this.wordList.hasOwnProperty(toCheck)) {
-					// todo: whitelist
-					return true;
+					const whiteList = this.wordList[toCheck];
+					if (!whiteList.length) return true;
+
+					for (const okWord of whiteList) {
+						const occurringIndex = word.indexOf(okWord);
+
+						if (occurringIndex < 0) continue;
+
+						if (this.containsMatchAfterRemovingWhitelistedWord(word, okWord, occurringIndex)) return true;
+					}
 				}
 				maxIndex++;
 			}
@@ -71,10 +100,6 @@ export class BadWordDetector {
 
 		const normalizedWord = this.normalizeWord(input);
 
-		if (this.containsExactMatch(normalizedWord)) return true;
-
-		if (this.containsPartialMatch(normalizedWord)) return true;
-
-		return false;
+		return this.containsMatch(normalizedWord);
 	}
 }
