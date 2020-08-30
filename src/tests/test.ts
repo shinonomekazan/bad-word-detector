@@ -13,6 +13,7 @@ const wordList = {
 	ジュース: [],
 	アサイー: [],
 	ピザ: [],
+	サクランボ: ["サクランボボ", "オッケーサクランボ"]
 };
 
 // BadWordDetector should detect all these
@@ -37,6 +38,8 @@ const testBlacklistedInput = [
 	"あささあさいーAbCd",
 	"ぴざ",
 	"ぴざAぽ",
+	"サクランボ",
+	"オッケーサクランボサクランボ"
 ];
 
 // BadWordDetector should allow these
@@ -62,6 +65,8 @@ const testOkInput = [
 	"アイス",
 	"カワウソ",
 	"elephant",
+	"アアアアサクランボボテストテスト",
+	"オッケーサクランボ"
 ];
 
 describe("BadWordDetector", () => {
