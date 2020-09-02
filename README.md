@@ -1,5 +1,5 @@
 # bad-word-detector
-Detect if Japanese/English input string contains blacklisted words.
+Detect if Japanese/English input string contains blacklisted words, while allowing specified whitelisted words that contain blacklisted words.
 
 Normalizes input string in the following ways:
 
@@ -15,7 +15,7 @@ Normalizes input string in the following ways:
 const badWordList = {
 	苺: [],
 	ジュース: [],
-	watermelon: [],
+	watermelon: ["containswatermelonbutok", "watermelondontblacklist"],
 };
 
 const badWordDetector = new BadWordDetector(badWordList);
@@ -29,4 +29,5 @@ badWordDetector.isBad("シューズ"); // false
 badWordDetector.isBad("シュース"); // false
 badWordDetector.isBad("melon"); // false
 badWordDetector.isBad("water"); // false
+badWordDetector.isBad("containswatermelonbutok"); // false
 ```
