@@ -1,6 +1,6 @@
 {
   "name": "bad-word-detector",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Detect if input string contains blacklisted words",
   "main": "build/index.js",
   "repository": {

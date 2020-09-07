@@ -39,7 +39,8 @@ const testBlacklistedInput = [
 	"ぴざ",
 	"ぴざAぽ",
 	"サクランボ",
-	"オッケーサクランボサクランボ"
+	"オッケーサクランボサクランボ",
+	"superbadサクランボああ"
 ];
 
 // BadWordDetector should allow these
