@@ -149,8 +149,8 @@ export class BadWordDetector {
 		const normalizedWord = this.normalizeWord(input);
 
 		const normalizedIsBad = this.containsMatch({ word: normalizedWord, isSlice: false, isNormalized: true });
-		const unormalizedIsBad = this.options && this.options.checkUnNormalized ? this.containsMatch({ word: input, isSlice: false, isNormalized: false }) : false;
+		const unNormalizedIsBad = this.options && this.options.checkUnNormalized ? this.containsMatch({ word: input, isSlice: false, isNormalized: false }) : false;
 
-		return normalizedIsBad || unormalizedIsBad;
+		return normalizedIsBad || unNormalizedIsBad;
 	}
 }
