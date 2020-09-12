@@ -2,15 +2,31 @@ import { deburr } from "lodash";
 
 // key is the word itself, value is an array of words containing key which should be allowed (whitelist)
 interface WordList {
-	[wordToDetect: string]: string[];
+	[wordToDetect: string]: {
+		whitelist: string[];
+		mode?: DetectionMode;
+	};
+}
+
+interface WordToCheck {
+	word: string;
+	isSlice: boolean;
+	isNormalized: boolean;
+}
+
+export enum DetectionMode {
+	Default = 1,
+	ExactMatch = 2, // ngWord: apples. iloveapples = false, iloveAPPLES = false, APPLES = true, apples = true
+	UnNormalizedOnly = 3, // ngWord: apples. iloveapples = true, iloveAPPLES = false, APPLES = false, apples = true
+	UnNormalizedOnlyExactMatch = 4, // ngWord: apples. iloveapples = false, iloveAPPLES = false, APPLES = false, apples = true
+};
+
+interface Options {
+	checkUnNormalized?: boolean;
 }
 
 export class BadWordDetector {
-	private wordList: WordList;
-
-	constructor(wordList: WordList) {
-		this.wordList = wordList;
-	}
+	constructor(private wordList: WordList, private options: Options = { checkUnNormalized: true }) {}
 
 	private removeSpaces(word: string): string {
 		return word.replace(/\s+/g, "");
@@ -38,32 +54,52 @@ export class BadWordDetector {
 		return specialCharsRemoved.toLowerCase();
 	}
 
-	private containsExactMatch(word: string): boolean {
-		return this.wordList.hasOwnProperty(word);
+	private containsExactMatch(wordToCheck: WordToCheck): boolean {
+		const { word, isSlice, isNormalized } = wordToCheck;
+
+		const isContained = this.wordList.hasOwnProperty(word);
+
+		if (!isContained) return false;
+
+		const { mode } = this.wordList[word];
+
+		if (mode) {
+			// The string has been sliced already, so 'exact match' mode words are OK
+			if ([DetectionMode.ExactMatch, DetectionMode.UnNormalizedOnlyExactMatch].includes(mode) && isSlice) return false;
+
+			// The string has been normalized so 'unnormalized only' mode words are OK
+			if ([DetectionMode.UnNormalizedOnly, DetectionMode.UnNormalizedOnlyExactMatch].includes(mode) && isNormalized) return false;
+		}
+
+		return true;
 	}
 
-	private containsMatch(word: string): boolean {
+	private containsMatch(word: WordToCheck): boolean {
 		return this.containsExactMatch(word) || this.containsPartialMatch(word);
 	}
 
-	private containsMatchAfterRemovingWhitelistedWord(word: string, whitelistedWord: string, indexOccurredAt: number): boolean {
+	private containsMatchAfterRemovingWhitelistedWord(wordToCheck: WordToCheck, whitelistedWord: string, indexOccurredAt: number): boolean {
+		const { word, isNormalized } = wordToCheck;
+
 		const wordBefore = word.substring(0, indexOccurredAt);
 		const wordAfter = word.substr(indexOccurredAt + whitelistedWord.length);
 
 		if (wordBefore.length) {
-			const containsBadWord = this.containsMatch(wordBefore);
+			const containsBadWord = this.containsMatch({ word: wordBefore, isSlice: true, isNormalized });
 			if (containsBadWord) return true;
 		}
 
 		if (wordAfter.length) {
-			const containsBadWord = this.containsMatch(wordAfter);
+			const containsBadWord = this.containsMatch({word: wordAfter, isSlice: true, isNormalized });
 			if (containsBadWord) return true;
 		}
 
 		return false;
 	}
 
-	private containsPartialMatch(word: string): boolean {
+	private containsPartialMatch(wordToCheck: WordToCheck): boolean {
+		const { word, isNormalized } = wordToCheck;
+
 		for (let i = 0; i < word.length; i++) {
 			let maxIndex = i;
 
@@ -77,15 +113,24 @@ export class BadWordDetector {
 				const toCheck = word.substring(i, maxIndex + 1);
 
 				if (this.wordList.hasOwnProperty(toCheck)) {
-					const whiteList = this.wordList[toCheck];
-					if (!whiteList.length) return true;
+					const { whitelist, mode } = this.wordList[toCheck];
 
-					for (const okWord of whiteList) {
+					// If an 'exact match' word got past the exact match method, then it doesn't need to be flagged here
+					if (mode) {
+						if ([DetectionMode.ExactMatch, DetectionMode.UnNormalizedOnlyExactMatch].includes(mode) || mode === DetectionMode.UnNormalizedOnly && isNormalized) {
+							maxIndex++;
+							continue;
+						}
+					}
+
+					if (!whitelist.length) return true;
+
+					for (const okWord of whitelist) {
 						const occurringIndex = word.indexOf(okWord);
 
 						if (occurringIndex < 0) continue;
 
-						return this.containsMatchAfterRemovingWhitelistedWord(word, okWord, occurringIndex);
+						return this.containsMatchAfterRemovingWhitelistedWord(wordToCheck, okWord, occurringIndex);
 					}
 
 					// the bad word was not whitelisted
@@ -103,6 +148,9 @@ export class BadWordDetector {
 
 		const normalizedWord = this.normalizeWord(input);
 
-		return this.containsMatch(normalizedWord);
+		const normalizedIsBad = this.containsMatch({ word: normalizedWord, isSlice: false, isNormalized: true });
+		const unormalizedIsBad = this.options && this.options.checkUnNormalized ? this.containsMatch({ word: input, isSlice: false, isNormalized: false }) : false;
+
+		return normalizedIsBad || unormalizedIsBad;
 	}
 }
