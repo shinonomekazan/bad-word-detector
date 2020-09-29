@@ -1,7 +1,7 @@
 import { deburr } from "lodash";
 
 // key is the word itself, value is an array of words containing key which should be allowed (whitelist)
-interface WordList {
+export interface WordList {
 	[wordToDetect: string]: {
 		whitelist: string[];
 		mode?: DetectionMode;
