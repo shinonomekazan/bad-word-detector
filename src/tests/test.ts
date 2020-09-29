@@ -84,7 +84,7 @@ const testBlacklistedInput = [
 	"マスカット",
 	"ぶどう",
 	"   pine   apple   ",
-	"mángo"
+	"mángo",
 ];
 
 // BadWordDetector should allow these
@@ -115,7 +115,7 @@ const testOkInput = [
 	"マスカットが入っているけどOK",
 	"ぶどうぶどうぶどう",
 	"pineappleisthebest",
-	"mango smoothie"
+	"mango smoothie",
 ];
 
 describe("BadWordDetector", () => {
@@ -158,7 +158,10 @@ const wordListForUnNormalizedCheck = {
 	blueberry: {
 		whitelist: [],
 		mode: DetectionMode.UnNormalizedOnlyExactMatch, // BLUEBERRY is OK, iloveblueberry is OK
-	}
+	},
+	"🌱": {
+		whitelist: ["🌱🌱🌱"],
+	},
 };
 
 const testUnNormalizedBadWords = [
@@ -168,7 +171,8 @@ const testUnNormalizedBadWords = [
 	"PASSIONFRUIT",
 	"マロン",
 	"まろん",
-	"blueberry"
+	"blueberry",
+	"🌱🌱",
 ];
 
 const testUnNormalizedOkWords = [
@@ -178,7 +182,8 @@ const testUnNormalizedOkWords = [
 	"ｐássioｎｆｒｕｉｔ",
 	"passionfruit",
 	"BLUEBERRY",
-	"iloveblueberry"
+	"iloveblueberry",
+	"🌱🌱🌱",
 ];
 
 describe("BadWordDetector (with checkUnNormalized option)", () => {
