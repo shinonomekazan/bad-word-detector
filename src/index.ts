@@ -49,7 +49,6 @@ export class BadWordDetector {
 		const accentsRemoved = deburr(widthNormalized);
 
 		const specialCharsRemoved = this.removeNonLetters(accentsRemoved);
-		if (!specialCharsRemoved.length) throw new Error("Input contains no valid characters");
 
 		return specialCharsRemoved.toLowerCase();
 	}
