@@ -1,4 +1,4 @@
-import { deburr } from "lodash";
+import deburr from "lodash.deburr";
 
 // key is the word itself, value is an array of words containing key which should be allowed (whitelist)
 export interface WordList {
