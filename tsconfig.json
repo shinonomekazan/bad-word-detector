@@ -11,8 +11,7 @@
 		"noImplicitReturns": true,
 		"strictNullChecks": true,
 		"strict": true,
-		"noImplicitAny": false,
-		"esModuleInterop": true
+		"noImplicitAny": false
 	},
 	"include": [
 		"src/**/*.ts"
